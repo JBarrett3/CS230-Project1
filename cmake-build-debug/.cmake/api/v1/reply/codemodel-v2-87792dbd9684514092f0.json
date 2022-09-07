@@ -1,0 +1,60 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.13"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "cmake_testapp",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "cmake_testapp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-cmake_testapp-Debug-ee3b8a9db8cb77855b04.json",
+					"name" : "cmake_testapp",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/James/OneDrive/Documents/OneDrive/Documents/College/F 22/CS230/CS230-Project1-v2/CS230-Project1/cmake-build-debug",
+		"source" : "C:/Users/James/OneDrive/Documents/OneDrive/Documents/College/F 22/CS230/CS230-Project1-v2/CS230-Project1"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}

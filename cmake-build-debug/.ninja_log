@@ -1,0 +1,5 @@
+# ninja log v5
+1	84	6842944355456955	CMakeFiles/cmake_testapp.dir/adventure.c.obj	b6ac0603822561bc
+86	199	6842944356555471	cmake_testapp.exe	543956a896778cd8
+2	101	6842946670921759	CMakeFiles/cmake_testapp.dir/adventure.c.obj	b6ac0603822561bc
+102	213	6842946672001245	cmake_testapp.exe	543956a896778cd8
