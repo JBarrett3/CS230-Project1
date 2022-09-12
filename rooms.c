@@ -202,7 +202,6 @@ struct Character* findAndMoveCharacter(struct Room* roomList[9], char* charName,
                 } //no move required
                 index = moveCharacter(roomList[i]->character[k], destination);
                 roomList[i]->character[k] = NULL;
-                printf("%s moved to the %s\n", charName, destination->name);
                 return destination->character[index];
             }
         }
@@ -255,16 +254,16 @@ bool clue(struct Player *player, char* characterName, char* itemName, int* attem
         freeVars(roomList,  characterList, itemList);
         exit(0);
     }
-    struct Character* guessCharacter = findAndMoveCharacter(roomList, characterName, player->currRoom);
-    if (guessCharacter == NULL) {
-        return false; //not a character
-    }
     struct Room* guessRoom = player->currRoom;
     struct Item* guessItem = testItemInInventoryOrRoom(player, itemName);
     if (guessItem == NULL) {
         printf("Item not in inventory or room, guess not acceptable\n");
         *attemptCount = *attemptCount+1;
         return false;
+    }
+    struct Character* guessCharacter = findAndMoveCharacter(roomList, characterName, player->currRoom);
+    if (guessCharacter == NULL) {
+        return false; //not a character
     }
     return testGuess(guessCharacter, guessRoom, guessItem, attemptCount);
 }

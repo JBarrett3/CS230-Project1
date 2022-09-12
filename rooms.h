@@ -8,7 +8,6 @@
 
 bool compString(char* input, char* expected);
 
-//prototypes
 struct Room {
     char* name;
     struct Room* North;

@@ -1,6 +1,5 @@
 #include "rooms.h"
 #include "items.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -88,10 +87,13 @@ void playGame(struct Room* board[3][3], struct Room* roomList[9], struct Charact
     char input[2048];
     char* token;
     char delim[2] = " ";
-    while (1) { //TODO segfailure for a bunch of lines
+    while (1) {
         printf("What would you like to do:\n");
         gets(input);
         token = strtok(input,delim);
+        if (token == NULL) {
+            continue;
+        }
         if (strcmp(token,"help") == 0) {
             help();
         } else if (compString(input,"list")) {
@@ -138,7 +140,9 @@ void playGame(struct Room* board[3][3], struct Room* roomList[9], struct Charact
                 exit(0);
             } else {
                 continue;
-            }//otherwise, function displays results.
+            } //otherwise, function displays results.
+        } else if (token != NULL) {
+            printf("Please start with a command (no spaces)\n");
         } else {
             printf("We couldn't understand that command, try again?\n");
         }
