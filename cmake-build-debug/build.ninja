@@ -55,6 +55,18 @@ build CMakeFiles/cmake_testapp.dir/adventure.c.obj: C_COMPILER__cmake_testapp_De
   OBJECT_DIR = CMakeFiles\cmake_testapp.dir
   OBJECT_FILE_DIR = CMakeFiles\cmake_testapp.dir
 
+build CMakeFiles/cmake_testapp.dir/items.c.obj: C_COMPILER__cmake_testapp_Debug C$:/Users/James/OneDrive/Documents/OneDrive/Documents/College/F$ 22/CS230/CS230-Project1-v2/CS230-Project1/items.c || cmake_object_order_depends_target_cmake_testapp
+  DEP_FILE = CMakeFiles\cmake_testapp.dir\items.c.obj.d
+  FLAGS = -g
+  OBJECT_DIR = CMakeFiles\cmake_testapp.dir
+  OBJECT_FILE_DIR = CMakeFiles\cmake_testapp.dir
+
+build CMakeFiles/cmake_testapp.dir/rooms.c.obj: C_COMPILER__cmake_testapp_Debug C$:/Users/James/OneDrive/Documents/OneDrive/Documents/College/F$ 22/CS230/CS230-Project1-v2/CS230-Project1/rooms.c || cmake_object_order_depends_target_cmake_testapp
+  DEP_FILE = CMakeFiles\cmake_testapp.dir\rooms.c.obj.d
+  FLAGS = -g
+  OBJECT_DIR = CMakeFiles\cmake_testapp.dir
+  OBJECT_FILE_DIR = CMakeFiles\cmake_testapp.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target cmake_testapp
@@ -63,7 +75,7 @@ build CMakeFiles/cmake_testapp.dir/adventure.c.obj: C_COMPILER__cmake_testapp_De
 #############################################
 # Link the executable cmake_testapp.exe
 
-build cmake_testapp.exe: C_EXECUTABLE_LINKER__cmake_testapp_Debug CMakeFiles/cmake_testapp.dir/adventure.c.obj
+build cmake_testapp.exe: C_EXECUTABLE_LINKER__cmake_testapp_Debug CMakeFiles/cmake_testapp.dir/adventure.c.obj CMakeFiles/cmake_testapp.dir/items.c.obj CMakeFiles/cmake_testapp.dir/rooms.c.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\cmake_testapp.dir
