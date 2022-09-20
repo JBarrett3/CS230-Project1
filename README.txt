@@ -1,7 +1,7 @@
 Compiling the code:
-    The code can be compiled by running "gcc adventure.c -o <exe-name>" where <exe-name> can
+    The code can be compiled by running "gcc -o <output-name> adventure.c rooms.c items.c" where <exe-name> can
 be filled in with a title of the user's choice. Then the code can be executed by running
-./<exe-name> .
+./<output-name> .
 
 Overview:
     The code first randomly selects a seed. It allocates an attemptCount, 3 by 3 board, a character list, item list,
