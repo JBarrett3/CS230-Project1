@@ -5,9 +5,41 @@
 #include <time.h>
 #include <string.h>
 
+/**
+ *
+ * @param board
+ * @param roomList
+ * @param characterList
+ * @param itemList
+ *
+ * Sets the board with rooms, characters, and items
+ */
 void setBoard(struct Room *board[3][3], struct Room *roomList[9], struct Character *characterList[MAX_CHARACTER], struct Item *itemList[6]);
+
+/**
+ *
+ * @param board
+ * @param roomList
+ * @param characterList
+ * @param itemList
+ *
+ * Provides user interface for game and routes input to necessary functions
+ */
 void playGame(struct Room *board[3][3], struct Room *roomList[9], struct Character *characterList[MAX_CHARACTER], struct Item *itemList[6]);
+
+/**
+ * Provides a display of user options
+ */
 void help();
+
+/**
+ *
+ * @param roomList
+ * @param characterList
+ * @param itemList
+ *
+ * Provides a list of all rooms, characters, and items in play
+ */
 void list(struct Room *roomList[9], struct Character *characterList[MAX_CHARACTER], struct Item *itemList[6]);
 
 int main() {
@@ -28,20 +60,21 @@ void setBoard(struct Room *board[3][3], struct Room* roomList[9], struct Charact
 }
 
 void playGame(struct Room* board[3][3], struct Room* roomList[9], struct Character* characterList[MAX_CHARACTER], struct Item* itemList[6]) {
-    int attemptCount = 0;
+    int attemptCount = 0; //tracks the number of attempts made to guess the secret
     struct Player player = {.item=NULL, .currRoom = board[1][1]};
     printf("Welcome to Clue\n");
-    char input[2048];
-    char* token;
+    char input[2048]; //holds user input
+    char* token; //holds segment of user input
     char delim[2] = " ";
     while (1) {
         printf("What would you like to do:\n");
         fgets(input, 2048, stdin);
-        token = strtok(input,delim);
-        if (token == NULL) {
+        token = strtok(input,delim); //breaks up user input by space
+        token[strcspn(token, "\n")] = 0;
+        if (token == NULL) { //handles user entering enter key
             continue;
         }
-        if (compString(token,"help") == 0) {
+        if (compString(token,"help")) {
             help();
         } else if (compString(token,"list")) {
             list(roomList, characterList, itemList);
@@ -55,7 +88,7 @@ void playGame(struct Room* board[3][3], struct Room* roomList[9], struct Charact
             drop(&player, itemList);
         } else if (compString(token, "inventory")) {
             inventory(&player);
-        } else if (compString(token, "clue")) {
+        } else if (compString(token, "clue")) { //following lines interpret the character and item name
             char* characterFirstName = strtok(NULL, delim);
             if (characterFirstName == NULL) {
                 printf("You should specify a character and an item, try again?\n");
@@ -71,7 +104,7 @@ void playGame(struct Room* board[3][3], struct Room* roomList[9], struct Charact
                 printf("You should specify a character and an item, try again?\n");
                 continue;
             }
-            char characterFullName[2048] = "";
+            char characterFullName[2048] = ""; //following lines concatenate the character's full name
             strcat(characterFullName, characterFirstName);
             strcat(characterFullName, " ");
             strcat(characterFullName, characterLastName);

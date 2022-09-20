@@ -6,51 +6,48 @@
 #include <stdbool.h>
 
 bool compString(char* input, char* expected) {
-    if (strlen(input) != strlen(expected)) {
-        return false;
+    int minIndexable; //used to avoid indexing out of bounds
+    if (strlen(input) > strlen(expected)) {
+        minIndexable = strlen(expected);
+    } else {
+        minIndexable = strlen(input);
     }
-    for (int i = 0; i < strlen(expected); i++) {
+    for (int i = 0; i < minIndexable; i++) { //compares strings up until min index that is in bounds
         if (tolower(input[i]) != tolower(expected[i])) {
             return false;
         }
-    }
+    } //note that this supports shorthand so that full names are not required. This is a feature, not a bug
     return true;
 }
 
-void populateRooms(struct Room board[3][3], struct Room roomList[9]) {
+void populateRooms(struct Room *board[3][3], struct Room *roomList[9]) {
     //creating Rooms
     struct Room* kitchen = malloc(sizeof(struct Room));
     kitchen->name="kitchen";
-    kitchen->secret = false;
     struct Room* hall = malloc(sizeof(struct Room));
     hall->name="hall";
-    hall->secret = false;
     struct Room* ballroom = malloc(sizeof(struct Room));
     ballroom->name="ballroom";
-    ballroom->secret = false;
     struct Room* conservatory = malloc(sizeof(struct Room));
     conservatory->name="conservatory";
-    conservatory->secret = false;
     struct Room* diningRoom = malloc(sizeof(struct Room));
     diningRoom->name="dining room";
-    diningRoom->secret = false;
     struct Room* study = malloc(sizeof(struct Room));
     study->name="study";
-    study->secret = false;
     struct Room* billiardRoom = malloc(sizeof(struct Room));
     billiardRoom->name="billiard room";
-    billiardRoom->secret = false;
     struct Room* library = malloc(sizeof(struct Room));
     library->name="library";
-    library->secret = false;
     struct Room* lounge = malloc(sizeof(struct Room));
     lounge->name="lounge";
-    lounge->secret = false;
 
     //creating roomList
     roomList[0] = kitchen; roomList[1] = hall; roomList[2] = ballroom;
     roomList[3] = conservatory; roomList[4] = diningRoom; roomList[5] = study;
     roomList[6] = billiardRoom; roomList[7] = library; roomList[8] = lounge;
+    for (int i = 0; i < 9; i++) {
+        roomList[i]->secret = false;
+    }
 
     //randomizing roomList
     for (int i = 9 - 1; i >= 1; i--) {
@@ -100,7 +97,7 @@ void populateRooms(struct Room board[3][3], struct Room roomList[9]) {
 }
 
 void look(struct Player* player) {
-    printf("You are in the %s\n", player->currRoom->name);
+    printf("You are in the %s\n", player->currRoom->name); //going through surrounding rooms and printing names
     if (player->currRoom->North == NULL) {
         printf("To your North : %s\n", "empty");
     } else {
@@ -121,7 +118,7 @@ void look(struct Player* player) {
     } else {
         printf("To your West : %s\n", player->currRoom->West->name);
     }
-    struct Item* itemInRoom = player->currRoom->item;
+    struct Item* itemInRoom = player->currRoom->item; //iterating through and printing items
     printf("Items in room: ");
     if (itemInRoom == NULL) {
         printf("Room is empty\n");
@@ -133,7 +130,7 @@ void look(struct Player* player) {
         printf("\n");
     }
     printf("Characters in room: ");
-    if (player->currRoom->character[0] == NULL) {
+    if (player->currRoom->character[0] == NULL) { //iterating through and printing characters
         printf("No characters in room\n");
     } else {
         for (int i = 0; i < MAX_CHARACTER; i++) {
@@ -153,7 +150,7 @@ void go(struct Player* player) {
     char* token;
     char delim[2] = " ";
     printf("In what direction would you like to go?:\n");
-    while (1) {
+    while (1) { //check through available directions
         gets(input);
         token = strtok(input,delim);
         if (token == NULL) {
@@ -193,7 +190,7 @@ void go(struct Player* player) {
                 player->currRoom = player->currRoom->West;
             }
             break;
-        } else {
+        } else { //direction not found, so ask for re-input
             printf("I couldn't understand that direction, try again? Or enter \"exit\" to return the other actions\n");
         }
     }
@@ -217,30 +214,30 @@ struct Character* findAndMoveCharacter(struct Room* roomList[9], char* charName,
             if (roomList[i]->character[k] == NULL) {
                 continue;
             }
-            if (compString(roomList[i]->character[k]->name, charName)) {
+            if (compString(roomList[i]->character[k]->name, charName)) { //character found
                 int index;
                 if (compString(destination->name, roomList[i]->name)) {
                     return destination->character[k];
                 } //no move required
                 index = moveCharacter(roomList[i]->character[k], destination);
-                roomList[i]->character[k] = NULL;
-                return destination->character[index];
+                roomList[i]->character[k] = NULL; //set previous location to null
+                return destination->character[index]; //return character that has moved
             }
         }
     }
-    printf("%s is not a character\n", charName);
+    printf("%s is not a character\n", charName); //character not found in character list so does not exist
     return NULL;
 }
 
 struct Item *testItemInInventoryOrRoom(struct Player *player, char *itemName) {
-    struct Item* itemInventory = player->item;
+    struct Item* itemInventory = player->item; //iterate through inventory to find item
     while (itemInventory != NULL) {
         if (compString(itemInventory->name, itemName)) {
             return itemInventory;
         }
         itemInventory = itemInventory->next;
     }
-    struct Item* itemRoom = player->currRoom->item;
+    struct Item* itemRoom = player->currRoom->item; //iterate through room to find item
     while (itemRoom != NULL) {
         if (compString(itemRoom->name, itemName)) {
             return itemRoom;
@@ -260,9 +257,9 @@ bool testGuess(struct Character *guessCharacter, struct Room *guessRoom, struct 
     if (guessItem->secret == true) {
         printf("Item match\n");
     }
-    if (guessCharacter->secret && guessRoom->secret && guessItem->secret) {
+    if (guessCharacter->secret && guessRoom->secret && guessItem->secret) { //all matches found
         return true;
-    } else {
+    } else { //matches not perfect
         printf("Make another guess\n");
         *attemptCount = *attemptCount + 1;
         return false;
@@ -291,13 +288,13 @@ bool clue(struct Player *player, char* characterName, char* itemName, int* attem
 }
 
 void freeVars(struct Room *roomList[9], struct Character *characterList[MAX_CHARACTER], struct Item *itemList[6]) {
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < 9; i++) { //free rooms
         free(roomList[i]);
     }
-    for (int i = 0; i < MAX_CHARACTER; i++) {
+    for (int i = 0; i < MAX_CHARACTER; i++) { //free characters
         free(characterList[i]);
     }
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 6; i++) { //free items
         free(itemList[i]);
     }
 }
