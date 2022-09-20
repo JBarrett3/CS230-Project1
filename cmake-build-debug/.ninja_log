@@ -1,13 +1,5 @@
 # ninja log v5
-3	112	6847128660971128	CMakeFiles/cmake_testapp.dir/adventure.c.obj	b6ac0603822561bc
-113	230	6847128662109940	cmake_testapp.exe	9665025abae47272
-14	138	6847013772654601	CMakeFiles/cmake_testapp.dir/items.c.obj	28c0ef0baf9ea8ea
-4	153	6847127979192478	CMakeFiles/cmake_testapp.dir/rooms.c.obj	dcedf1f3966518a5
-3	118	6847128907501335	CMakeFiles/cmake_testapp.dir/adventure.c.obj	b6ac0603822561bc
-119	225	6847128908522200	cmake_testapp.exe	9665025abae47272
-2	109	6847129894062429	CMakeFiles/cmake_testapp.dir/adventure.c.obj	b6ac0603822561bc
-110	218	6847129895125315	cmake_testapp.exe	9665025abae47272
-3	132	6847131200608834	CMakeFiles/cmake_testapp.dir/adventure.c.obj	b6ac0603822561bc
-133	245	6847131201719941	cmake_testapp.exe	9665025abae47272
-4	114	6847132037804720	CMakeFiles/cmake_testapp.dir/rooms.c.obj	dcedf1f3966518a5
-115	225	6847132038864333	cmake_testapp.exe	9665025abae47272
+3	144	6853352903372796	CMakeFiles/cmake_testapp.dir/adventure.c.obj	b6ac0603822561bc
+152	264	6853352904543256	cmake_testapp.exe	9665025abae47272
+10	147	6853352903392807	CMakeFiles/cmake_testapp.dir/items.c.obj	28c0ef0baf9ea8ea
+16	151	6853352903442811	CMakeFiles/cmake_testapp.dir/rooms.c.obj	dcedf1f3966518a5

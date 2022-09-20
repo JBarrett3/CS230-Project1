@@ -6,6 +6,9 @@
 #include <stdbool.h>
 
 bool compString(char* input, char* expected) {
+    if (strlen(input) != strlen(expected)) {
+        return false;
+    }
     for (int i = 0; i < strlen(expected); i++) {
         if (tolower(input[i]) != tolower(expected[i])) {
             return false;
@@ -14,36 +17,45 @@ bool compString(char* input, char* expected) {
     return true;
 }
 
-void populateRooms(struct Room* board[3][3], struct Room* roomList[9]) {
+void populateRooms(struct Room board[3][3], struct Room roomList[9]) {
     //creating Rooms
     struct Room* kitchen = malloc(sizeof(struct Room));
     kitchen->name="kitchen";
+    kitchen->secret = false;
     struct Room* hall = malloc(sizeof(struct Room));
     hall->name="hall";
+    hall->secret = false;
     struct Room* ballroom = malloc(sizeof(struct Room));
     ballroom->name="ballroom";
+    ballroom->secret = false;
     struct Room* conservatory = malloc(sizeof(struct Room));
     conservatory->name="conservatory";
+    conservatory->secret = false;
     struct Room* diningRoom = malloc(sizeof(struct Room));
-    diningRoom->name="diningRoom";
-    struct Room* cellar = malloc(sizeof(struct Room));
-    cellar->name="cellar";
+    diningRoom->name="dining room";
+    diningRoom->secret = false;
+    struct Room* study = malloc(sizeof(struct Room));
+    study->name="study";
+    study->secret = false;
     struct Room* billiardRoom = malloc(sizeof(struct Room));
-    billiardRoom->name="billiardRoom";
+    billiardRoom->name="billiard room";
+    billiardRoom->secret = false;
     struct Room* library = malloc(sizeof(struct Room));
     library->name="library";
+    library->secret = false;
     struct Room* lounge = malloc(sizeof(struct Room));
     lounge->name="lounge";
+    lounge->secret = false;
 
     //creating roomList
     roomList[0] = kitchen; roomList[1] = hall; roomList[2] = ballroom;
-    roomList[3] = conservatory; roomList[4] = diningRoom; roomList[5] = cellar;
+    roomList[3] = conservatory; roomList[4] = diningRoom; roomList[5] = study;
     roomList[6] = billiardRoom; roomList[7] = library; roomList[8] = lounge;
 
     //randomizing roomList
-    for (int i = 0; i < 9; ++i) {
-        int j = rand() % (9); //random number between 0 and 8 inclusive
-        struct Room* temp = roomList[i]; //swap element in index i with random index
+    for (int i = 9 - 1; i >= 1; i--) {
+        int j = rand() % (i+1); //j is a random integer where 0 <= j <= i
+        struct Room* temp = roomList[i]; //swap itemList[i] with itemList[j]
         roomList[i] = roomList[j];
         roomList[j] = temp;
     }
@@ -136,9 +148,20 @@ void look(struct Player* player) {
     printf("\n");
 }
 
-void go(struct Player* player, char* input) {
+void go(struct Player* player) {
+    char input[2048];
+    char* token;
+    char delim[2] = " ";
+    printf("In what direction would you like to go?:\n");
     while (1) {
-        if (compString(input,"North")) {
+        gets(input);
+        token = strtok(input,delim);
+        if (token == NULL) {
+            continue;
+        } else if (compString(token, "exit")) {
+            break;
+        }
+        if (compString(token,"North")) {
             if (player->currRoom->North == NULL) {
                 printf("There is no room north of you\n");
             } else {
@@ -146,7 +169,7 @@ void go(struct Player* player, char* input) {
                 player->currRoom = player->currRoom->North;
             }
             break;
-        } else if (compString(input,"East")) {
+        } else if (compString(token,"East")) {
             if (player->currRoom->East == NULL) {
                 printf("There is no room east of you\n");
             } else {
@@ -154,7 +177,7 @@ void go(struct Player* player, char* input) {
                 player->currRoom = player->currRoom->East;
             }
             break;
-        } else if (compString(input,"South")) {
+        } else if (compString(token,"South")) {
             if (player->currRoom->South == NULL) {
                 printf("There is no room south of you\n");
             } else {
@@ -162,7 +185,7 @@ void go(struct Player* player, char* input) {
                 player->currRoom = player->currRoom->South;
             }
             break;
-        } else if (compString(input, "West")) {
+        } else if (compString(token, "West")) {
             if (player->currRoom->West == NULL) {
                 printf("There is no room west of you\n");
             } else {
@@ -171,8 +194,7 @@ void go(struct Player* player, char* input) {
             }
             break;
         } else {
-            printf("I couldn't understand that direction, try again?\n");
-            return;
+            printf("I couldn't understand that direction, try again? Or enter \"exit\" to return the other actions\n");
         }
     }
     printf("\n");
@@ -229,13 +251,13 @@ struct Item *testItemInInventoryOrRoom(struct Player *player, char *itemName) {
 }
 
 bool testGuess(struct Character *guessCharacter, struct Room *guessRoom, struct Item *guessItem, int* attemptCount) {
-    if (guessCharacter->secret) {
+    if (guessCharacter->secret == true) {
         printf("Character match\n");
     }
-    if (guessRoom->secret) {
+    if (guessRoom->secret == true) {
         printf("Room match\n");
     }
-    if (guessItem->secret) {
+    if (guessItem->secret == true) {
         printf("Item match\n");
     }
     if (guessCharacter->secret && guessRoom->secret && guessItem->secret) {

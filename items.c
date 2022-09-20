@@ -1,38 +1,97 @@
 #include "items.h"
-#include "rooms.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
+
+void add_item(struct Item** oldItem, struct Item* newItem) {
+    struct Item** temp = oldItem;
+    if ((*temp) == NULL) {
+        *oldItem = newItem;
+    } else {
+        while((*temp)->next != NULL) {
+            temp = &(*temp)->next;
+        }
+        (*temp)->next = newItem;
+    }
+}
+
+void drop_item(struct Item** oldItem, char target[2048]) {
+    struct Item** temp = oldItem;
+    struct Item** prev = NULL;
+
+    if ((*temp) != NULL && compString((*temp)->name,target)) {
+        *oldItem = (*temp)->next;
+        return;
+    }
+
+    while ((*temp) != NULL && !compString((*temp)->name, target)) {
+        prev = temp;
+        temp = &(*temp)->next;
+    }
+
+    if ((*temp) == NULL) {
+        return;
+    }
+
+    (*prev)->next = (*temp)->next;
+}
+
+struct Item* check_item(struct Item** desiredItem, char target[2048]) {
+    struct Item** temp = desiredItem;
+    while ((*temp) != NULL) {
+        if (compString((*temp)->name, target)) {
+            return *temp;
+        }
+        temp = &((*temp)->next);
+    }
+    return NULL;
+}
+
+bool itemExists(char* potItem, struct Item* itemList[6]) {
+    for (int i = 0; i < 6; i++) {
+        if (compString(potItem, itemList[i]->name)) {
+            return true;
+        }
+    }
+    return false;
+}
 
 void populateItems(struct Room *board[3][3], struct Item *itemList[6]) {
     //creating Items
     struct Item* revolver = malloc(sizeof(struct Item));
     revolver->name = "revolver";
     revolver->next = NULL;
+    revolver->secret = false;
     struct Item* dagger = malloc(sizeof(struct Item));
     dagger->name = "dagger";
     dagger->next = NULL;
-    struct Item* leadPipe = malloc(sizeof(struct Item));
-    leadPipe->name = "leadPipe";
-    leadPipe->next = NULL;
+    dagger->secret = false;
+    struct Item* pipe = malloc(sizeof(struct Item));
+    pipe->name = "pipe";
+    pipe->next = NULL;
+    pipe->secret = false;
     struct Item* rope = malloc(sizeof(struct Item));
     rope->name = "rope";
     rope->next = NULL;
+    rope->secret = false;
     struct Item* candlestick = malloc(sizeof(struct Item));
     candlestick->name = "candlestick";
     candlestick->next = NULL;
+    candlestick->secret = false;
     struct Item* wrench = malloc(sizeof(struct Item));
     wrench->name = "wrench";
     wrench->next = NULL;
+    wrench->secret = false;
 
     //creating itemList
-    itemList[0] = revolver; itemList[1] = dagger; itemList[2] = leadPipe;
+    itemList[0] = revolver; itemList[1] = dagger; itemList[2] = pipe;
     itemList[3] = rope; itemList[4] = candlestick; itemList[5] = wrench;
 
     //randomizing itemList
-    for (int i = 0; i < 6; ++i) {
-        int j = rand() % (6); //random number between 0 and 5 inclusive
-        struct Item* temp = itemList[i]; //swap element in index i with random index
+    for (int i = 6 - 1; i >= 1; i--) {
+        int j = rand() % (i+1); //j is a random integer where 0 <= j <= i
+        struct Item* temp = itemList[i]; //swap itemList[i] with itemList[j]
         itemList[i] = itemList[j];
         itemList[j] = temp;
     }
@@ -45,7 +104,7 @@ void populateItems(struct Room *board[3][3], struct Item *itemList[6]) {
     int potentialRoom;
     while (itemsDistributed < 6) {
         potentialRoom = rand() % 8;
-        for (int i = 0; i < 6; i++) { //todo speedUp
+        for (int i = 0; i < 6; i++) {
             if (itemRooms[i] == potentialRoom) {
                 break;
             }
@@ -78,27 +137,29 @@ void populateItems(struct Room *board[3][3], struct Item *itemList[6]) {
 void populateCharacters(struct Room *board[3][3], struct Character *characterList[MAX_CHARACTER]) {
     //creating characters
     struct Character* mrsWhite = malloc(sizeof(struct Character));
-    mrsWhite->name = "mrsWhite";
+    mrsWhite->name = "Mrs White";
+    mrsWhite->secret = false;
     struct Character* mrsPeacock = malloc(sizeof(struct Character));
-    mrsPeacock->name = "mrsPeacock";
+    mrsPeacock->name = "Mrs Peacock";
+    mrsPeacock->secret = false;
     struct Character* professorPlum = malloc(sizeof(struct Character));
-    professorPlum->name = "professorPlum";
+    professorPlum->name = "Professor Plum";
+    professorPlum->secret = false;
     struct Character* colonelMustard = malloc(sizeof(struct Character));
-    colonelMustard->name = "colonelMustard";
+    colonelMustard->name = "Colonel Mustard";
+    colonelMustard->secret = false;
     struct Character* missScarlett = malloc(sizeof(struct Character));
-    missScarlett->name = "missScarlett";
-    struct Character* reverendGreen = malloc(sizeof(struct Character));
-    reverendGreen->name = "reverendGreen";
+    missScarlett->name = "Miss Scarlett";
+    missScarlett->secret = false;
 
     //creating characterList
     characterList[0] = mrsWhite; characterList[1] = mrsPeacock; characterList[2] = professorPlum;
-    characterList[3] = colonelMustard; characterList[4] = missScarlett; characterList[5] = reverendGreen;
-    //TODO implement limiting effect of characterList based on number of characters in play
+    characterList[3] = colonelMustard; characterList[4] = missScarlett;
 
     //randomizing characterList
-    for (int i = 0; i < MAX_CHARACTER; ++i) {
-        int j = rand() % (MAX_CHARACTER); //random number between 0 and MAX_CHARACTER exclusive
-        struct Character * temp = characterList[i]; //swap element in index i with random index
+    for (int i = MAX_CHARACTER - 1; i >= 1; i--) {
+        int j = rand() % (i+1); //j is a random integer where 0 <= j <= i
+        struct Character* temp = characterList[i]; //swap itemList[i] with itemList[j]
         characterList[i] = characterList[j];
         characterList[j] = temp;
     }
@@ -111,7 +172,7 @@ void populateCharacters(struct Room *board[3][3], struct Character *characterLis
     int potentialRoom;
     while (itemsDistributed < 6) {
         potentialRoom = rand() % 8;
-        for (int i = 0; i < 6; i++) { //todo speedUp
+        for (int i = 0; i < 6; i++) {
             if (itemRooms[i] == potentialRoom) {
                 break;
             }
@@ -157,114 +218,64 @@ void inventory(struct Player* player) {
     printf("\n");
 }
 
-struct Item* checkIfItemInRoom(struct Room* room, char target[2048]) {
-    struct Item* temp = room->item;
-    while (temp != NULL) {
-        if (compString(temp->name, target)) {
-            return temp;
+void take(struct Player* player, struct Item* itemList[6]) {
+    char input[2048];
+    char* token;
+    char delim[2] = " ";
+    printf("What would you like to take:\n");
+    while (1) {
+        fgets(input, 2048, stdin);
+        token = strtok(input,delim);
+        if (token == NULL) {
+            continue;
+        } else if (compString(token, "exit")) {
+            break;
         }
-        temp = temp->next;
-    }
-    return NULL;
-}
-
-void removeItemFromRoom(struct Room* room, char target[100]) {
-    struct Item* temp = room->item;
-    struct Item* prev = NULL;
-
-    if (temp != NULL && compString(temp->name,target)) {
-        room->item = temp->next;
-        return;
-    }
-
-    while (temp != NULL && !compString(temp->name, target)) {
-        prev = temp;
-        temp = temp->next;
-    }
-
-    if (temp == NULL) {
-        return;
-    }
-
-    prev->next = temp->next;
-}
-
-void addItemToInventory(struct Player* player, struct Item* newItem) {
-    struct Item* temp = player->item;
-    if (temp == NULL) {
-        player->item = newItem;
-    } else {
-        while(temp->next != NULL) {
-            temp = temp->next;
+        if (!itemExists(token, itemList)) {
+            printf("%s is not an item\n", token);
+            printf("try again? Or enter \"exit\" to return to other actions\n");
+        } else {
+            struct Item* removedItem = check_item(&(player->currRoom->item), token);
+            if (removedItem == NULL) {
+                printf("%s not in inventory\n", token);
+            } else {
+                add_item(&player->item, removedItem);
+                drop_item(&player->currRoom->item, token);
+                removedItem->next = NULL;
+                printf("%s added to inventory\n", removedItem->name);
+                break;
+            }
         }
-        temp->next = newItem;
     }
 }
 
-void take(struct Player* player, char* input) {
-    struct Item* removedItem = checkIfItemInRoom(player->currRoom, input);
-    if (removedItem != NULL) {
-        addItemToInventory(player, removedItem);
-        removeItemFromRoom(player->currRoom, input);
-        removedItem->next = NULL;
-        printf("%s added to inventory\n", removedItem->name);
-    } else {
-        printf("%s not in room\n", input);
-    }
-}
-
-struct Item* checkIfItemInInventory(struct Player* player, char target[100]) {
-    struct Item* temp = player->item;
-    while (temp != NULL) {
-        if (compString(temp->name, target)) {
-            return temp;
+void drop(struct Player* player, struct Item* itemList[6]) {
+    char input[2048];
+    char* token;
+    char delim[2] = " ";
+    printf("What would you like to take:\n");
+    while (1) {
+        fgets(input, 2048, stdin);
+        token = strtok(input,delim);
+        if (token == NULL) {
+            continue;
+        } else if (compString(token, "exit")) {
+            break;
         }
-        temp = temp->next;
-    }
-    return NULL;
-}
-
-void removeItemFromInventory(struct Player* player, char target[100]) {
-    struct Item* temp = player->item;
-    struct Item* prev = NULL;
-
-    if (temp != NULL && compString(temp->name,target)) {
-        player->item = temp->next;
-        return;
-    }
-
-    while (temp != NULL && !compString(temp->name, target)) {
-        prev = temp;
-        temp = temp->next;
-    }
-
-    if (temp == NULL) {
-        return;
-    }
-
-    prev->next = temp->next;
-}
-
-void addItemToRoom(struct Player* player, struct Item* newItem) {
-    struct Item* itemPtr = player->currRoom->item;
-    if (itemPtr == NULL) {
-        player->currRoom->item = newItem;
-    } else {
-        while(itemPtr->next != NULL) {
-            itemPtr = itemPtr->next;
+        if (!itemExists(token, itemList)) {
+            printf("%s is not an item\n", token);
+            printf("try again? Or enter \"exit\" to return to other actions\n");
+        } else {
+            struct Item* removedItem = check_item(&(player->item), token);
+            if (removedItem == NULL) {
+                printf("%s not in inventory\n", token);
+            } else {
+                add_item(&player->currRoom->item, removedItem);
+                drop_item(&player->item, token);
+                removedItem->next = NULL;
+                printf("%s added to room\n", removedItem->name);
+                break;
+            }
         }
-        itemPtr->next = newItem;
-    }
-}
-
-void drop(struct Player* player, char* input) {
-    struct Item* removedItem = checkIfItemInInventory(player, input);
-    if (removedItem != NULL) {
-        addItemToRoom(player, removedItem);
-        removeItemFromInventory(player, input);
-        removedItem->next = NULL;
-        printf("%s added to room\n", removedItem->name);
-    } else {
-        printf("%s not in inventory\n", input);
     }
 }
